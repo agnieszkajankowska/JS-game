@@ -24,6 +24,7 @@ var canvas = document.querySelector('#myCanvas'),
     ctx = canvas.getContext('2d'),
     canvasWidth = canvas.width,
     canvasHeight = canvas.height,
+    ballRadius = 10,
     x = canvasWidth / 2,
     y = canvasHeight - 30,
     dx = 2,
@@ -31,15 +32,23 @@ var canvas = document.querySelector('#myCanvas'),
 
 function drawBall() {
     ctx.beginPath();
-    ctx.arc(x, y, 10, 0, Math.PI*2);
+    ctx.arc(x, y, ballRadius, 0, Math.PI*2);
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
 }
 
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     drawBall();
+    if(x + dx > canvasWidth - ballRadius || x + dx < ballRadius) {
+        dx = -dx;
+    }
+
+    if(y + dy > canvasHeight - ballRadius || y + dy < ballRadius) {
+        dy = -dy;
+    }
+
     x += dx;
     y += dy;
 }
