@@ -25,6 +25,10 @@ var canvas = document.querySelector('#myCanvas'),
     canvasWidth = canvas.width,
     canvasHeight = canvas.height,
     ballRadius = 10,
+    paddleHeight = 10,
+    paddleWidth = 75,
+    paddleX = (canvasWidth - paddleWidth) / 2,
+    paddleY = canvasHeight - paddleHeight,
     x = canvasWidth / 2,
     y = canvasHeight - 30,
     dx = 2,
@@ -38,9 +42,18 @@ function drawBall() {
     ctx.closePath();
 }
 
+function drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     drawBall();
+    drawPaddle();
     if(x + dx > canvasWidth - ballRadius || x + dx < ballRadius) {
         dx = -dx;
     }
