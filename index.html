@@ -64,6 +64,13 @@
             dy = -dy;
         }
 
+        if (moveRight && paddleX < canvasWidth - paddleWidth) {
+            paddleX += 7;
+        }
+        else if (moveLeft && paddleX > 0) {
+            paddleX -= 7;
+        }
+
         x += dx;
         y += dy;
     }
@@ -71,7 +78,8 @@
     function keyDownHandler(e) {
         if (e.keyCode === 37) {
             moveLeft = true;
-        } else if (e.keyCode === 39) {
+        }
+        else if (e.keyCode === 39) {
             moveRight = true;
         }
     }
