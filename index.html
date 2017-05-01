@@ -60,8 +60,17 @@
             dx = -dx;
         }
 
-        if (y + dy > canvasHeight - ballRadius || y + dy < ballRadius) {
+        if (y + dy < ballRadius) {
             dy = -dy;
+        }
+        else if (y + dy > canvasHeight - ballRadius) {
+            if (x > paddleX && x < paddleX + paddleWidth) {
+                dy = -dy;
+            }
+            else {
+                alert("GAME OVER");
+                document.location.reload();
+            }
         }
 
         if (moveRight && paddleX < canvasWidth - paddleWidth) {
@@ -73,6 +82,7 @@
 
         x += dx;
         y += dy;
+
     }
 
     function keyDownHandler(e) {
