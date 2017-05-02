@@ -156,6 +156,13 @@
         ctx.fillText("Score: "+score, 8, 20);
     }
 
+    function checkIfPlayerWon() {
+        if (score === 5) {
+            alert("YOU WIN, CONGRATULATIONS!");
+            document.location.reload();
+        }
+    }
+
     function draw() {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         createBricksOnCanvas();
@@ -165,6 +172,7 @@
         controlPaddle();
         detectCollisionWithBricks();
         drawScore();
+        checkIfPlayerWon();
     }
 
     function keyDownHandler(e) {
