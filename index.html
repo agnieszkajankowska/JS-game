@@ -41,7 +41,8 @@
         brickHeight = 20,
         brickPadding = 10,
         brickOffsetTop = 30,
-        brickOffsetLeft = 30;
+        brickOffsetLeft = 30,
+        bricks = [];
 
 
     function drawBall() {
@@ -60,21 +61,36 @@
         ctx.closePath();
     }
 
-    function drawBricks() {
-        var bricks = [];
+    function drawBricks(brickX, brickY) {
+        ctx.beginPath();
+        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function createBricks() {
         for (var c = 0; c < brickColumnCount; c++) {
             bricks[c] = [];
             for (var r = 0; r < brickRowCount; r++) {
                 bricks[c][r] = {};
                 var brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
                 var brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
-                bricks[c][r]['x'] = brickX;
-                bricks[c][r]['y'] = brickY;
-                ctx.beginPath();
-                ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = "#0095DD";
-                ctx.fill();
-                ctx.closePath();
+                bricks[c][r]['brickPosX'] = brickX;
+                bricks[c][r]['brickPosY'] = brickY;
+                drawBricks(brickX, brickY);
+            }
+        }
+    }
+
+    function detectCollisionWithBricks() {
+        for (var c = 0; c < brickColumnCount; c++) {
+            for (var r = 0; r < brickRowCount; r++) {
+                var b = bricks[c][r];
+                if (ballCenterPosX > b.brickPosX && ballCenterPosX < b.brickPosX + brickWidth &&
+                    ballCenterPosY > b.brickPosY && ballCenterPosY < b.brickPosY + brickHeight) {
+                    dy = -dy;
+                }
             }
         }
     }
@@ -89,7 +105,8 @@
     }
 
     function bounceBallOffWalls() {
-        if (ballCenterPosX + dx > canvasWidth - ballRadius || ballCenterPosX + dx < ballRadius) {
+        if (ballCenterPosX + dx > canvasWidth - ballRadius ||
+            ballCenterPosX + dx < ballRadius) {
             dx = -dx;
         }
 
@@ -97,7 +114,8 @@
             dy = -dy;
         }
         else if (ballCenterPosY + dy > canvasHeight - ballRadius) {
-            if (ballCenterPosX > paddleX && ballCenterPosX < paddleX + paddleWidth) {
+            if (ballCenterPosX > paddleX &&
+                ballCenterPosX < paddleX + paddleWidth) {
                 dy = -dy;
             }
             else {
@@ -115,11 +133,12 @@
 
     function draw() {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        drawBricks();
+        createBricks();
         drawBall();
         bounceBallOffWalls();
         drawPaddle();
         controlPaddle();
+        detectCollisionWithBricks();
     }
 
     function keyDownHandler(e) {
@@ -141,6 +160,7 @@
             moveRight = false;
         }
     }
+
 
     document.addEventListener("keydown", keyDownHandler);
     document.addEventListener("keyup", keyUpHandler);
