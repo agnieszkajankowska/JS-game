@@ -88,11 +88,6 @@
                     bricks[c][r].brickPosX = brickX;
                     bricks[c][r].brickPosY = brickY;
                     drawBricks(brickX, brickY);
-                    ctx.beginPath();
-                    ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                    ctx.fillStyle = "#0095DD";
-                    ctx.fill();
-                    ctx.closePath();
                 }
             }
         }
@@ -157,7 +152,7 @@
     }
 
     function checkIfPlayerWon() {
-        if (score === 5) {
+        if (score === brickRowCount * brickColumnCount) {
             alert("YOU WIN, CONGRATULATIONS!");
             document.location.reload();
         }
