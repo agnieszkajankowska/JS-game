@@ -42,7 +42,8 @@
         brickPadding = 10,
         brickOffsetTop = 30,
         brickOffsetLeft = 30,
-        bricks = [];
+        bricks = [],
+        score = 0;
 
 
     function drawBall() {
@@ -106,6 +107,7 @@
                         ballCenterPosY > b.brickPosY && ballCenterPosY < b.brickPosY + brickHeight) {
                         dy = -dy;
                         b.status = 0;
+                        score++;
                     }
                 }
             }
@@ -148,6 +150,12 @@
         document.location.reload();
     }
 
+    function drawScore() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText("Score: "+score, 8, 20);
+    }
+
     function draw() {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         createBricksOnCanvas();
@@ -156,6 +164,7 @@
         drawPaddle();
         controlPaddle();
         detectCollisionWithBricks();
+        drawScore();
     }
 
     function keyDownHandler(e) {
