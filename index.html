@@ -34,7 +34,15 @@
         dx = 2,
         dy = -2,
         moveRight = false,
-        moveLeft = false;
+        moveLeft = false,
+        brickRowCount = 3,
+        brickColumnCount = 5,
+        brickWidth = 75,
+        brickHeight = 20,
+        brickPadding = 10,
+        brickOffsetTop = 30,
+        brickOffsetLeft = 30;
+
 
     function drawBall() {
         ctx.beginPath();
@@ -50,6 +58,25 @@
         ctx.fillStyle = "#0095DD";
         ctx.fill();
         ctx.closePath();
+    }
+
+    function drawBricks() {
+        var bricks = [];
+        for (var c = 0; c < brickColumnCount; c++) {
+            bricks[c] = [];
+            for (var r = 0; r < brickRowCount; r++) {
+                bricks[c][r] = {};
+                var brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
+                var brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
+                bricks[c][r]['x'] = brickX;
+                bricks[c][r]['y'] = brickY;
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = "#0095DD";
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
     }
 
     function controlPaddle() {
@@ -88,6 +115,7 @@
 
     function draw() {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        drawBricks();
         drawBall();
         bounceBallOffWalls();
         drawPaddle();
