@@ -29,8 +29,8 @@
         paddleWidth = 75,
         paddleX = (canvasWidth - paddleWidth) / 2,
         paddleY = canvasHeight - paddleHeight,
-        x = canvasWidth / 2,
-        y = canvasHeight - 30,
+        ballCenterPosX = canvasWidth / 2,
+        ballCenterPosY = canvasHeight - 30,
         dx = 2,
         dy = -2,
         moveRight = false,
@@ -38,7 +38,7 @@
 
     function drawBall() {
         ctx.beginPath();
-        ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+        ctx.arc(ballCenterPosX, ballCenterPosY, ballRadius, 0, Math.PI * 2);
         ctx.fillStyle = "#0095DD";
         ctx.fill();
         ctx.closePath();
@@ -52,40 +52,50 @@
         ctx.closePath();
     }
 
-    function draw() {
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        drawBall();
-        drawPaddle();
-        if (x + dx > canvasWidth - ballRadius || x + dx < ballRadius) {
-            dx = -dx;
-        }
-
-        if (y + dy < ballRadius) {
-            dy = -dy;
-        }
-        else if (y + dy > canvasHeight - ballRadius) {
-            if (x > paddleX && x < paddleX + paddleWidth) {
-                dy = -dy;
-            }
-            else {
-                alert("GAME OVER");
-                document.location.reload();
-            }
-        }
-
+    function controlPaddle() {
         if (moveRight && paddleX < canvasWidth - paddleWidth) {
             paddleX += 7;
         }
         else if (moveLeft && paddleX > 0) {
             paddleX -= 7;
         }
+    }
 
-        x += dx;
-        y += dy;
+    function bounceBallOffWalls() {
+        if (ballCenterPosX + dx > canvasWidth - ballRadius || ballCenterPosX + dx < ballRadius) {
+            dx = -dx;
+        }
 
+        if (ballCenterPosY + dy < ballRadius) {
+            dy = -dy;
+        }
+        else if (ballCenterPosY + dy > canvasHeight - ballRadius) {
+            if (ballCenterPosX > paddleX && ballCenterPosX < paddleX + paddleWidth) {
+                dy = -dy;
+            }
+            else {
+                gameOver();
+            }
+        }
+        ballCenterPosX += dx;
+        ballCenterPosY += dy;
+    }
+
+    function gameOver() {
+        alert("GAME OVER");
+        document.location.reload();
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        drawBall();
+        bounceBallOffWalls();
+        drawPaddle();
+        controlPaddle();
     }
 
     function keyDownHandler(e) {
+        console.log("keyDown");
         if (e.keyCode === 37) {
             moveLeft = true;
         }
@@ -95,9 +105,11 @@
     }
 
     function keyUpHandler(e) {
+        console.log("keyUp");
         if (e.keyCode === 37) {
             moveLeft = false;
-        } else if (e.keyCode === 39) {
+        }
+        else if (e.keyCode === 39) {
             moveRight = false;
         }
     }
@@ -108,3 +120,4 @@
 </script>
 </body>
 </html>
+
