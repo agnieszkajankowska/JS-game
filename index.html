@@ -21,7 +21,8 @@
 
 <script>
     (function () {
-        var canvas = document.querySelector('#myCanvas'),
+        let canvas = document.querySelector('#myCanvas'),
+            blue = "#0095DD",
             ctx = canvas.getContext('2d'),
             canvasWidth = canvas.width,
             canvasHeight = canvas.height,
@@ -34,10 +35,8 @@
             ballCenterPosY = canvasHeight - 30,
             dx = 2,
             dy = -2,
-            moveRight = false,
+            moveRight = false, //czy można zmienić na lokalną?
             moveLeft = false,
-            brickRowCount = 3,
-            brickColumnCount = 5,
             brickWidth = 75,
             brickHeight = 20,
             brickPadding = 10,
@@ -45,59 +44,103 @@
             brickOffsetLeft = 30,
             bricks = [],
             score = 0;
+//        const gameGonfig = {
+//            canvasWidth: canvas.width,
+//            canvasHeight: canvas.height,
+//            ballRadius: 10,
+//            paddleHeight: 10,
+//            paddleWidth: 75,
+//            brickWidth: 75,
+//            brickHeight: 20,
+//            brickPadding: 10,
+//            brickOffsetTop: 30,
+//            brickOffsetLeft: 30,
+//        }
+        //stworzenie obiektu konfiguracyjnego dla zmiennych: brickWidth itd
 
+//
+//        function drawFigure(figure, brickX, brickY) {
+//            ctx.beginPath();
+//            ctx.fillStyle = blue;
+//            switch (figure) {
+//                case 'ball':
+//                    ctx.arc(ballCenterPosX, ballCenterPosY, ballRadius, 0, Math.PI * 2);
+//                    break;
+//                case 'paddle':
+//                    ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
+//                    break;
+//                case 'bricks':
+//                    ctx.rect(brickX, brickY, brickWidth, brickHeight);
+//                    break;
+//                case 'score':
+//                    ctx.font = "16px Arial";
+//                    ctx.fillText("Score: " + score, 8, 20);
+//                    break;
+//            }
+//            ctx.fill();
+//            ctx.closePath();
+//        }
 
-        function drawBall() {
+        function drawFigure(figure, brickX, brickY) {
             ctx.beginPath();
-            ctx.arc(ballCenterPosX, ballCenterPosY, ballRadius, 0, Math.PI * 2);
-            ctx.fillStyle = "#0095DD";
+            ctx.fillStyle = blue;
+            createFigureDetails(figure, brickX, brickY);
             ctx.fill();
             ctx.closePath();
-        }
 
-        function drawPaddle() {
-            ctx.beginPath();
-            ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
-            ctx.fillStyle = "#0095DD";
-            ctx.fill();
-            ctx.closePath();
-        }
-
-        function drawBricks(brickX, brickY) {
-            ctx.beginPath();
-            ctx.rect(brickX, brickY, brickWidth, brickHeight);
-            ctx.fillStyle = "#0095DD";
-            ctx.fill();
-            ctx.closePath();
+            function createFigureDetails(figure, brickX, brickY) {
+                const figures = {
+                    'ball': function () {
+                        return ctx.arc(ballCenterPosX, ballCenterPosY, ballRadius, 0, Math.PI * 2);
+                    },
+                    'paddle': function () {
+                        return ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
+                    },
+                    'bricks': function () {
+                        return ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                    },
+                    'score': function () {
+                        return ctx.font = "16px Arial",             //czy to jest ok?
+                            ctx.fillText("Score: " + score, 8, 20);
+                    }
+                };
+                return figures[figure]();
+            }
         }
 
         function createBricks() {
-            for (var c = 0; c < brickColumnCount; c++) {
+            const brickRowCount = 3;
+            const brickColumnCount = 5;
+            for (let c = 0; c < brickColumnCount; c++) {
                 bricks[c] = [];
-                for (var r = 0; r < brickRowCount; r++) {
+                for (let r = 0; r < brickRowCount; r++) {
                     bricks[c][r] = {brickPosX: 0, brickPosY: 0, status: 1};
                 }
             }
         }
 
         function createBricksOnCanvas() {
-            for (var c = 0; c < brickColumnCount; c++) {
-                for (var r = 0; r < brickRowCount; r++) {
+            const brickRowCount = 3;
+            const brickColumnCount = 5;
+            for (let c = 0; c < brickColumnCount; c++) {
+                for (let r = 0; r < brickRowCount; r++) {
                     if (bricks[c][r].status === 1) {
-                        var brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
-                        var brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
+                        const brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
+                        const brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
                         bricks[c][r].brickPosX = brickX;
                         bricks[c][r].brickPosY = brickY;
-                        drawBricks(brickX, brickY);
+                        drawFigure('bricks', brickX, brickY);
                     }
                 }
             }
         }
 
         function detectCollisionWithBricks() {
-            for (var c = 0; c < brickColumnCount; c++) {
-                for (var r = 0; r < brickRowCount; r++) {
-                    var b = bricks[c][r];
+            const brickRowCount = 3;
+            const brickColumnCount = 5;
+            for (let c = 0; c < brickColumnCount; c++) {
+                for (let r = 0; r < brickRowCount; r++) {
+                    const b = bricks[c][r];
                     if (b.status === 1) {
                         if (ballCenterPosX > b.brickPosX && ballCenterPosX < b.brickPosX + brickWidth &&
                             ballCenterPosY > b.brickPosY && ballCenterPosY < b.brickPosY + brickHeight) {
@@ -146,13 +189,10 @@
             document.location.reload();
         }
 
-        function drawScore() {
-            ctx.font = "16px Arial";
-            ctx.fillStyle = "#0095DD";
-            ctx.fillText("Score: " + score, 8, 20);
-        }
 
         function checkIfPlayerWon() {
+            const brickRowCount = 3;
+            const brickColumnCount = 5;
             if (score === brickRowCount * brickColumnCount) {
                 alert("YOU WIN, CONGRATULATIONS!");
                 document.location.reload();
@@ -162,17 +202,16 @@
         function draw() {
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
             createBricksOnCanvas();
-            drawBall();
+            drawFigure('ball');
+            drawFigure('paddle');
+            drawFigure('score');
             bounceBallOffWalls();
-            drawPaddle();
             controlPaddle();
             detectCollisionWithBricks();
-            drawScore();
             checkIfPlayerWon();
         }
 
         function keyDownHandler(e) {
-            console.log("keyDown");
             if (e.keyCode === 37) {
                 moveLeft = true;
             }
@@ -182,7 +221,6 @@
         }
 
         function keyUpHandler(e) {
-            console.log("keyUp");
             if (e.keyCode === 37) {
                 moveLeft = false;
             }
@@ -192,7 +230,7 @@
         }
 
         function mouseMoveHandler(e) {
-            var relativeX = e.clientX - canvas.offsetLeft;
+            let relativeX = e.clientX - canvas.offsetLeft;
             if (relativeX > 0 && relativeX < canvas.width) {
                 paddleX = relativeX - paddleWidth / 2;
             }
